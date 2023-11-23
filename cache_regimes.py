@@ -6,7 +6,9 @@ import torch
 
 class KVCache(ABC):
     @abstractmethod
-    def prune_kv_cache(self, past_key_values: Tuple[torch.Tensor]):
+    def prune_kv_cache(
+        self, past_key_values: Tuple[torch.Tensor]
+    ) -> Tuple[torch.Tensor]:
         pass
 
 
@@ -15,7 +17,9 @@ class SlidingWindowCache(KVCache):
         self.cache_size = cache_size
         self.k_seq_dim = k_seq_dim
 
-    def prune_kv_cache(self, past_key_values: Tuple[torch.Tensor]):
+    def prune_kv_cache(
+        self, past_key_values: Tuple[torch.Tensor]
+    ) -> Tuple[torch.Tensor]:
         seq_len = past_key_values[0][0].size(self.k_seq_dim)
 
         if seq_len <= self.cache_size:
@@ -39,7 +43,9 @@ class AttentionSinkCache(KVCache):
         self.k_seq_dim = k_seq_dim
         self.v_seq_dim = v_seq_dim
 
-    def prune_kv_cache(self, past_key_values: Tuple[torch.Tensor]):
+    def prune_kv_cache(
+        self, past_key_values: Tuple[torch.Tensor]
+    ) -> Tuple[torch.Tensor]:
         seq_len = past_key_values[0][0].size(self.k_seq_dim)
 
         if seq_len <= self.recent_size + self.start_size:
